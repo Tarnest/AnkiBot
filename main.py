@@ -1,16 +1,39 @@
-# This is a sample Python script.
+import os
+from dotenv import load_dotenv
+from interactions import Client, Intents, listen, slash_command, SlashContext, check, is_owner
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+load_dotenv()
+
+bot = Client(intents=Intents.DEFAULT)
+# intents are what events we want to receive from discord, `DEFAULT` is usually fine
+
+@listen()  # this decorator tells snek that it needs to listen for the corresponding event, and run this coroutine
+async def on_ready():
+    # This event is called when the bot is ready to respond to commands
+    print("Ready")
+    print(f"This bot is owned by {bot.owner}")
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+@slash_command(name="my_command", description="My first command :)")
+async def my_command_function(ctx: SlashContext):
+    await ctx.send("Hello World")
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+@slash_command(name="poop", description="poop command")
+async def poop_function(ctx: SlashContext):
+    await ctx.send("butt")
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+@slash_command(name="log", description="Log Anki for Today")
+async def log_function(ctx: SlashContext):
+    await ctx.send("log")
+    # await ctx.member.add_roles(ctx.guild.get_role(1484234112590938153))
+
+
+@slash_command(name="check", description="Check if someone did Anki")
+async def check_function(ctx: SlashContext):
+    await ctx.send("check")
+
+
+token = os.getenv('TOKEN')
+bot.start(token)
